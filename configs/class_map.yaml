@@ -1,0 +1,25 @@
+# Sınıf Birleştirme ve Standartlaştırma Haritası
+# Farklı kaynaklardaki etiket adlarını sistemdeki standart Türkçe isimlere çevirir
+
+raw_to_standard:
+  live_knot: "canli_budak"
+  dead_knot: "olu_budak"
+  knot: "canli_budak"
+  crack: "catlak"
+  split: "catlak"
+  resin: "recine"
+  pitch_pocket: "recine"
+  blue_stain: "mavi_leke"
+  stain: "mavi_leke"
+  canli_budak: "canli_budak"
+  olu_budak: "olu_budak"
+  catlak: "catlak"
+  recine: "recine"
+  mavi_leke: "mavi_leke"
+
+classes:
+  0: "canli_budak"
+  1: "olu_budak"
+  2: "catlak"
+  3: "recine"
+  4: "mavi_leke"
