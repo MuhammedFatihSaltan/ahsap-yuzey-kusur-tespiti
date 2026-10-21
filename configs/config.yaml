@@ -1,0 +1,26 @@
+project:
+  name: "AhsapGoz"
+  version: "1.0.0"
+  seed: 42
+
+paths:
+  raw_data: "data/raw"
+  processed_data: "data/processed"
+  models: "models"
+  outputs: "outputs"
+  reports: "outputs/reports"
+
+device:
+  use_gpu: true
+
+quality_classification:
+  rules:
+    class_a:
+      max_defect_ratio: 0.02
+      allowed_defects: ["canli_budak"]
+    class_b:
+      max_defect_ratio: 0.05
+      allowed_defects: ["canli_budak", "olu_budak"]
+    class_c:
+      max_defect_ratio: 0.12
+      allowed_defects: ["canli_budak", "olu_budak", "recine", "mavi_leke"]

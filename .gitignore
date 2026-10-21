@@ -1,0 +1,28 @@
+# Python / Virtual Environment
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Data and Trained Models (Git'e yüklenmez)
+data/
+models/
+runs/
+outputs/
+
+# Environment variables
+.env
+
+# IDE / Editor Settings
+.vscode/
+.idea/
+
+# Windows OS files
+Thumbs.db
+desktop.ini
