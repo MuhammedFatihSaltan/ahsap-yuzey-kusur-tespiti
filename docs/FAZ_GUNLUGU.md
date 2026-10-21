@@ -46,3 +46,17 @@
 - `scripts/prepare_dataset.py`
 - `data/processed/yolo/data.yaml`
 **Git Commit:** `feat(data): veri temizleme, sinif haritalama ve bölme boru hatti eklendi`
+
+
+## Faz 3 — Klasik Görüntü İşleme Hattı (Baseline)
+**Tarih:** 21.10.2026
+**Amaç:** Dersin çekirdek konuları olan klasik görüntü işleme teknikleriyle temel kusur tespit hattını (Baseline) kurmak.
+**Yapılan işler:**
+1. `src/ahsapgoz/preprocessing.py` modülü altında Gri tonlama, CLAHE ve Gauss filtreleme işlevleri yazıldı.
+2. `src/ahsapgoz/classical.py` modülünde Otsu eşikleme, morfolojik açma/kapama ve kontur analizi ile kural tabanlı kusur aday çıkarma algoritması geliştirildi.
+3. `scripts/run_classical.py` çalıştırılarak ilk kural tabanlı tespit çıktısı `docs/figures/03_klasik_isleme_sonuc.png` olarak kaydedildi.
+**Çıktılar:**
+- `src/ahsapgoz/preprocessing.py`
+- `src/ahsapgoz/classical.py`
+- `docs/figures/03_klasik_isleme_sonuc.png`
+**Git Commit:** `feat(classical): CLAHE, morfolojik filtreler ve kontur tabanli klasik tespit motoru eklendi`
