@@ -60,3 +60,17 @@
 - `src/ahsapgoz/classical.py`
 - `docs/figures/03_klasik_isleme_sonuc.png`
 **Git Commit:** `feat(classical): CLAHE, morfolojik filtreler ve kontur tabanli klasik tespit motoru eklendi`
+
+
+## Faz 4 — Derin Öğrenme ile Kusur Tespiti (YOLO)
+**Tarih:** 21.10.2026
+**Amaç:** YOLO nesne tespiti mimarisini entegre ederek ahşap kusurlarını yüksek doğrulukla konumlandıran ve sınıflandıran derin öğrenme katmanını kurmak.
+**Yapılan işler:**
+1. `src/ahsapgoz/detector.py` modülü altında Ultralytics YOLOv8 sarmalayıcı sınıfı yazıldı.
+2. CUDA / GPU ivmelendirmesi otomatik algılanacak şekilde yapılandırıldı.
+3. `scripts/run_yolo.py` ile test çıkarımı gerçekleştirilip sonuç görseli `docs/figures/04_yolo_tespit_sonuc.png` adresine kaydedildi.
+**Çıktılar:**
+- `src/ahsapgoz/detector.py`
+- `scripts/run_yolo.py`
+- `docs/figures/04_yolo_tespit_sonuc.png`
+**Git Commit:** `feat(yolo): YOLOv8 nesne tespiti sarmalayicisi ve cikarim boru hatti eklendi`
