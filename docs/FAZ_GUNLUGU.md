@@ -118,3 +118,18 @@
 - `app/static/`
 - `tests/test_api.py`
 **Git Commit:** `feat(app): FastAPI backend, ahsap temali HTML/CSS arayuz ve web servisi eklendi`
+
+
+## Faz 8 — PDF Rapor Üretimi
+**Tarih:** 22.10.2026
+**Amaç:** Kullanıcıların analiz sonuçlarını Türkçe karakter destekli, profesyonel bir PDF kalite raporu olarak indirebilmesini sağlamak.
+**Yapılan işler:**
+1. `src/ahsapgoz/report.py` modülü geliştirilerek ReportLab kütüphanesi ve `Helvetica-Turkish` Unicode font yapılandırması eklendi.
+2. Analiz özeti, yan yana görseller (YOLO + Isı haritası) ve detaylı kusur tablosundan oluşan PDF şablonu oluşturuldu.
+3. `app/main.py` dosyasına `GET /report/{file_id}.pdf` indirme uç noktası entegre edildi.
+4. `tests/test_report.py` birim testi yazıldı ve doğrulandı.
+**Çıktılar:**
+- `src/ahsapgoz/report.py`
+- `scripts/run_report.py`
+- `tests/test_report.py`
+**Git Commit:** `feat(report): ReportLab tabanli Turkce PDF rapor uretim motoru ve indirme rotasi eklendi`
