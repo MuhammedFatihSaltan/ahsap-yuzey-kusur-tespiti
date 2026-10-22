@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>Ahşap Yüzey Görseli Yükleyin</h2>
+    <p>Analiz etmek istediğiniz ahşap veya kereste fotoğrafını yükleyin (JPG, PNG).</p>
+    
+    <form action="/analyze" method="post" enctype="multipart/form-data">
+        <label for="fileInput" class="drop-zone" style="display: block;">
+            <p>📸 Görsel Yüklemek İçin Tıklayın veya Dosyayı Sürükleyin</p>
+            <input type="file" id="fileInput" name="file" accept="image/*" style="display:none;" onchange="this.form.submit()">
+        </label>
+    </form>
+</div>
+{% endblock %}

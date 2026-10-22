@@ -87,3 +87,18 @@
 - `scripts/run_anomaly.py`
 - `docs/figures/05_anomali_isi_haritasi.png`
 **Git Commit:** `feat(anomaly): anomali tespiti ve isi haritasi (heatmap) motoru eklendi`
+
+
+## Faz 6 — Analiz Motoru ve Bilgi Tabanı
+**Tarih:** 22.10.2026
+**Amaç:** Tespit edilen kusurları endüstriyel metriklerle analiz etmek, Türkçe bilgi tabanından açıklamalar getirmek ve kalite sınıfı (A/B/C/Red) atamak.
+**Yapılan işler:**
+1. `knowledge/kusur_bilgi_tabani.json` ile kusur türlerine ait Türkçe açıklamalar, oluşum nedenleri, yapısal/estetik etkileri ve çözüm önerileri tanımlandı.
+2. `src/ahsapgoz/analysis.py` modülünde kusurlu alan yüzdesi ve çatlak varlığına göre A, B, C veya Red kararı veren kalite motoru yazıldı.
+3. `tests/test_analysis.py` ile `pytest` otomasyon testleri yazılarak sistem doğrulandı.
+**Çıktılar:**
+- `knowledge/kusur_bilgi_tabani.json`
+- `src/ahsapgoz/knowledge_base.py`
+- `src/ahsapgoz/analysis.py`
+- `tests/test_analysis.py`
+**Git Commit:** `feat(analysis): kalite siniflandirma motoru, bilgi tabani ve birim testleri eklendi`

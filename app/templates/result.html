@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Analiz Sonuçları</h2>
+        {% if result.grade == 'A Sınıfı' %}
+            <span class="badge badge-a">{{ result.grade }}</span>
+        {% elif result.grade == 'B Sınıfı' %}
+            <span class="badge badge-b">{{ result.grade }}</span>
+        {% elif result.grade == 'C Sınıfı' %}
+            <span class="badge badge-c">{{ result.grade }}</span>
+        {% else %}
+            <span class="badge badge-red">{{ result.grade }}</span>
+        {% endif %}
+    </div>
+    <p><strong>Açıklama:</strong> {{ result.grade_explanation }}</p>
+    <p><strong>Toplam Kusur Sayısı:</strong> {{ result.total_defects }} | <strong>Kusurlu Alan Oranı:</strong> %{{ result.total_defect_ratio_pct }}</p>
+</div>
+
+<div class="card" style="display: flex; gap: 1rem;">
+    <div style="flex: 1;">
+        <h3>İşaretlenmiş Kusurlar (YOLO)</h3>
+        <img src="{{ annotated_image_url }}" alt="YOLO Tespiti Sonucu" style="width: 100%; border-radius: 6px;">
+    </div>
+    <div style="flex: 1;">
+        <h3>Anomali Isı Haritası (Heatmap)</h3>
+        <img src="{{ heatmap_image_url }}" alt="Anomali Isı Haritası" style="width: 100%; border-radius: 6px;">
+    </div>
+</div>
+
+<div class="card">
+    <h3>Tespit Edilen Kusur Detayları</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Kusur Türü</th>
+                <th>Güven Skoru</th>
+                <th>Yüzey Oranı</th>
+                <th>Şiddet</th>
+                <th>Önerilen İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for defect in result.defects %}
+            <tr>
+                <td><strong>{{ defect.details.ad }}</strong></td>
+                <td>%{{ (defect.confidence * 100)|round(1) }}</td>
+                <td>%{{ defect.surface_ratio_pct }}</td>
+                <td>{{ defect.severity }}</td>
+                <td>{{ defect.details.onerilen_islem }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center;">Yüzeyde herhangi bir kusur tespit edilmedi (Temiz Yüzey).</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="/" class="btn">Yeni Analiz Yap</a>
+</div>
+{% endblock %}

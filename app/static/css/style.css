@@ -1,0 +1,102 @@
+:root {
+  --primary-color: #8B4513;
+  --primary-hover: #A0522D;
+  --bg-color: #FDFBF7;
+  --card-bg: #FFFFFF;
+  --text-color: #2C221E;
+  --border-color: #E2D8CE;
+  --accent-color: #D97706;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+}
+
+.drop-zone {
+  border: 2px dashed var(--primary-color);
+  border-radius: 8px;
+  padding: 3rem;
+  text-align: center;
+  background-color: #FFFDF9;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.drop-zone:hover {
+  background-color: #F5EFEB;
+}
+
+.btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.badge-a { background-color: #D1FAE5; color: #065F46; }
+.badge-b { background-color: #FEF3C7; color: #92400E; }
+.badge-c { background-color: #FFEDD5; color: #9A3412; }
+.badge-red { background-color: #FEE2E2; color: #991B1B; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background-color: #F8F4F0;
+}
