@@ -58,7 +58,57 @@
         </tbody>
     </table>
     <br>
-    <a href="/report/{{ file_id }}.pdf" target="_blank" class="btn" style="background-color: #D97706; margin-right: 10px;">📄 PDF Raporunu İndir</a>
-    <a href="/" class="btn">Yeni Analiz Yap</a>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <button id="aiAnalyzeBtn" onclick="runAIAnalysis('{{ file_id }}')" class="btn" style="background-color: #7C3AED;">✨ AI ile Detaylı Analiz</button>
+        <a href="/report/{{ file_id }}.pdf" target="_blank" class="btn" style="background-color: #D97706;">📄 PDF Raporunu İndir</a>
+        <a href="/" class="btn">Yeni Analiz Yap</a>
+    </div>
+
+    <!-- AI Sonuç Alanı -->
+    <div id="aiLoading" style="display: none; margin-top: 20px; color: #7C3AED; font-weight: bold;">
+        ⏳ Yapay Zekâ analizi hazırlanıyor, lütfen bekleyin...
+    </div>
+    <div id="aiError" style="display: none; margin-top: 20px; color: #991B1B; padding: 12px; background: #FEE2E2; border: 1px solid #FCA5A5; border-radius: 6px; font-weight: 600;"></div>
+    <div id="aiResultCard" class="card" style="display: none; margin-top: 20px; background-color: #F3E8FF; border-color: #C084FC;">
+        <h3 style="color: #6B21A8;">Yapay Zekâ Detaylı Analiz Raporu</h3>
+        <div id="aiReportText" style="white-space: pre-line; line-height: 1.6;"></div>
+    </div>
 </div>
+
+<script>
+async function runAIAnalysis(fileId) {
+    const btn = document.getElementById('aiAnalyzeBtn');
+    const loading = document.getElementById('aiLoading');
+    const errorDiv = document.getElementById('aiError');
+    const resultCard = document.getElementById('aiResultCard');
+    const reportTextDiv = document.getElementById('aiReportText');
+
+    btn.disabled = true;
+    loading.style.display = 'block';
+    errorDiv.style.display = 'none';
+    resultCard.style.display = 'none';
+
+    try {
+        const response = await fetch(`/ai-analyze/${fileId}`, { method: 'POST' });
+        const data = await response.json();
+
+        loading.style.display = 'none';
+        btn.disabled = false;
+
+        if (data.success) {
+            reportTextDiv.innerText = data.report_text;
+            resultCard.style.display = 'block';
+        } else {
+            errorDiv.innerText = "Sistem Uyarısı: " + data.error;
+            errorDiv.style.display = 'block';
+        }
+    } catch (err) {
+        console.error("AI Analiz İsteği Başarısız Oldu:", err);
+        loading.style.display = 'none';
+        btn.disabled = false;
+        errorDiv.innerText = "İstek sırasında bir ağ hatası oluştu. Lütfen bağlantınızı kontrol edin.";
+        errorDiv.style.display = 'block';
+    }
+}
+</script>
 {% endblock %}

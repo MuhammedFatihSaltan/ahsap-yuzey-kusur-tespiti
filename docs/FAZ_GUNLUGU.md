@@ -133,3 +133,15 @@
 - `scripts/run_report.py`
 - `tests/test_report.py`
 **Git Commit:** `feat(report): ReportLab tabanli Turkce PDF rapor uretim motoru ve indirme rotasi eklendi`
+
+
+## Faz 9 — Değerlendirme, Karşılaştırma ve Test
+**Tarih:** 22.10.2026
+**Amaç:** Projede kullanılan farklı yaklaşım ve modelleri karşılaştırmak, genel test otomasyonunu tamamlamak.
+**Yapılan işler:**
+1. `scripts/evaluate.py` ile Klasik, YOLO, Anomali ve Hibrit yaklaşımların metrik grafik çıktısı `docs/figures/06_yontem_karsilastirma.png` olarak oluşturuldu.
+2. Tüm birim testler (`pytest`) çalıştırılarak %100 test başarısı elde edildi.
+**Çıktılar:**
+- `scripts/evaluate.py`
+- `docs/figures/06_yontem_karsilastirma.png`
+**Git Commit:** `feat(eval): yontem karsilastirma betigi ve genel test entegrasyonu tamamlandi`

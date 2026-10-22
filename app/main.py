@@ -6,7 +6,7 @@ from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, Response, JSONResponse
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR / "src"))
@@ -15,22 +15,25 @@ from ahsapgoz.detector import YOLODetector
 from ahsapgoz.anomaly import AnomalyDetector
 from ahsapgoz.analysis import DefectAnalyzer
 from ahsapgoz.report import PDFReportGenerator
+from ahsapgoz.ai_report import AIReportGenerator
 
 app = FastAPI(title="AhşapGöz Web Uygulaması")
 
-# Statik Dosyalar ve Şablonlar
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "app" / "static")), name="static")
 app.mount("/outputs", StaticFiles(directory=str(BASE_DIR / "outputs")), name="outputs")
 templates = Jinja2Templates(directory=str(BASE_DIR / "app" / "templates"))
 
-# Modellerin ve Servislerin Yüklenmesi (Eşik 0.03 olarak ayarlandı)
 yolo_detector = YOLODetector(conf_threshold=0.03)
 anomaly_detector = AnomalyDetector()
 analyzer = DefectAnalyzer()
 pdf_generator = PDFReportGenerator()
+ai_generator = AIReportGenerator()
 
-# Bellekte son analiz verisini saklama
 LATEST_ANALYSIS = {}
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return Response(status_code=204)
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
@@ -48,17 +51,12 @@ async def analyze_image(request: Request, file: UploadFile = File(...)):
 
     file_id = str(uuid.uuid4())[:8]
     
-    # 1. YOLO Tespiti
     yolo_res = yolo_detector.predict(image)
-    
-    # 2. Anomali Isı Haritası
     anomaly_res = anomaly_detector.compute_heatmap(image)
 
-    # 3. Kalite Sınıflandırma (Anomali verisi de aktarılıyor)
     surface_area = image.shape[0] * image.shape[1]
     analysis_res = analyzer.calculate_quality_grade(yolo_res["detections"], surface_area, anomaly_res)
 
-    # İşlenmiş Görselleri Kaydetme
     uploads_dir = BASE_DIR / "outputs" / "uploads"
     results_dir = BASE_DIR / "outputs" / "results"
     uploads_dir.mkdir(parents=True, exist_ok=True)
@@ -74,7 +72,8 @@ async def analyze_image(request: Request, file: UploadFile = File(...)):
         "id": file_id,
         "result": analysis_res,
         "ann_path": str(ann_path),
-        "heat_path": str(heat_path)
+        "heat_path": str(heat_path),
+        "ai_report": None
     }
 
     context = {
@@ -85,6 +84,18 @@ async def analyze_image(request: Request, file: UploadFile = File(...)):
     }
 
     return templates.TemplateResponse(request=request, name="result.html", context=context)
+
+@app.post("/ai-analyze/{file_id}")
+async def run_ai_analysis(file_id: str):
+    if LATEST_ANALYSIS.get("id") != file_id:
+        return JSONResponse(status_code=404, content={"success": False, "error": "Analiz verisi bulunamadı."})
+
+    res = ai_generator.generate_ai_analysis(LATEST_ANALYSIS["result"])
+    if res.get("success"):
+        LATEST_ANALYSIS["ai_report"] = res.get("report_text")
+        return {"success": True, "report_text": res.get("report_text")}
+    else:
+        return JSONResponse(status_code=500, content={"success": False, "error": res.get("error")})
 
 @app.get("/report/{file_id}.pdf")
 async def download_pdf_report(file_id: str):
@@ -97,7 +108,8 @@ async def download_pdf_report(file_id: str):
             LATEST_ANALYSIS["result"],
             LATEST_ANALYSIS["ann_path"],
             LATEST_ANALYSIS["heat_path"],
-            pdf_path
+            pdf_path,
+            ai_text=LATEST_ANALYSIS.get("ai_report")
         )
         return FileResponse(pdf_path, media_type="application/pdf", filename=f"AhsapGoz_Rapor_{file_id}.pdf")
     

@@ -24,3 +24,9 @@ quality_classification:
     class_c:
       max_defect_ratio: 0.12
       allowed_defects: ["canli_budak", "olu_budak", "recine", "mavi_leke"]
+
+ai_service:
+  provider: "google"
+  model: "gemini-3.8-flash"
+  max_tokens: 1000
+  timeout_seconds: 30
