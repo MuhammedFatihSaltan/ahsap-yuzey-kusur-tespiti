@@ -25,7 +25,7 @@ def run_demo():
     out_path = FIGURES_DIR / "05_anomali_isi_haritasi.png"
     cv2.imwrite(str(out_path), results["overlay"])
 
-    print(f" Anomali Analizi Tamamlandı!")
+    print(" Anomali Analizi Tamamlandı!")
     print(f" Anomali Skoru: {results['anomaly_score']}")
     print(f" Anomali Var mı?: {results['is_anomaly']}")
     print(f" Isı Haritası Kaydedildi: {out_path}")

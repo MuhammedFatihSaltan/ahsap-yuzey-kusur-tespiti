@@ -102,3 +102,19 @@
 - `src/ahsapgoz/analysis.py`
 - `tests/test_analysis.py`
 **Git Commit:** `feat(analysis): kalite siniflandirma motoru, bilgi tabani ve birim testleri eklendi`
+
+
+## Faz 7 — Web Uygulaması (Backend + Yüksek Kaliteli Arayüz)
+**Tarih:** 22.10.2026
+**Amaç:** Kullanıcıların ahşap fotoğraflarını yükleyerek canlı analiz alabileceği FastAPI tabanlı web uygulamasını ve ahşap temalı arayüzü kurmak.
+**Yapılan işler:**
+1. `app/main.py` modülü altında FastAPI rotaları (`GET /`, `POST /analyze`) ve statik dosya servisleri tanımlandı.
+2. `app/templates/` altında responsive, ahşap temalı `index.html` ve `result.html` Jinja2 şablonları yazıldı.
+3. Görsel yükleme sonrası YOLO kutuları, Anomali Isı Haritası ve Türkçe kusur detay tablosu yan yana sunuldu.
+4. `tests/test_api.py` birim testi yazıldı ve doğrulandı.
+**Çıktılar:**
+- `app/main.py`
+- `app/templates/`
+- `app/static/`
+- `tests/test_api.py`
+**Git Commit:** `feat(app): FastAPI backend, ahsap temali HTML/CSS arayuz ve web servisi eklendi`
