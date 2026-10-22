@@ -74,3 +74,16 @@
 - `scripts/run_yolo.py`
 - `docs/figures/04_yolo_tespit_sonuc.png`
 **Git Commit:** `feat(yolo): YOLOv8 nesne tespiti sarmalayicisi ve cikarim boru hatti eklendi`
+
+
+## Faz 5 — Anomali Tespiti Katmanı
+**Tarih:** 21.10.2026
+**Amaç:** Etiketsiz/bilinmeyen ahşap yüzey kusurlarını yakalamak amacıyla anomali tespiti ve ısı haritası (Heatmap) üretici katmanı entegre etmek.
+**Yapılan işler:**
+1. `src/ahsapgoz/anomaly.py` modülü geliştirilerek anomali skoru hesaplama ve `COLORMAP_JET` tabanlı ısı haritası renklendirmesi yazıldı.
+2. `scripts/run_anomaly.py` çalıştırılarak anomali ısı haritası `docs/figures/05_anomali_isi_haritasi.png` adresine kaydedildi.
+**Çıktılar:**
+- `src/ahsapgoz/anomaly.py`
+- `scripts/run_anomaly.py`
+- `docs/figures/05_anomali_isi_haritasi.png`
+**Git Commit:** `feat(anomaly): anomali tespiti ve isi haritasi (heatmap) motoru eklendi`

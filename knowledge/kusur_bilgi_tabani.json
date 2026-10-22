@@ -1,0 +1,47 @@
+{
+  "canli_budak": {
+    "ad": "Canlı Budak (Live Knot)",
+    "kisa_aciklama": "Ağacın dal dokusunun gövdeyle bütünleştiği, lif yapısı sağlam budak türü.",
+    "olusum_nedeni": "Ağacın büyüme sürecinde doğal dallanması.",
+    "yapisal_etki": "Düşük - Lif yönünü hafif saptırabilir ancak parçalanma yapmaz.",
+    "estetik_etki": "Doğal ahşap görünümü sağlar, dekoratif amaçlı kullanılabilir.",
+    "onerilen_islem": "Zımparalama ve yüzey koruyucu vernik uygulaması yeterlidir.",
+    "kullanim_uygunlugu": "Mobilya, iç mekan kaplama ve yapısal elemanlar."
+  },
+  "olu_budak": {
+    "ad": "Ölü Budak (Dead/Loose Knot)",
+    "kisa_aciklama": "Ağaç gövdesiyle bağlantısı kopmuş, zamanla düşme riski olan budak türü.",
+    "olusum_nedeni": "Kurumuş dalların gövde içinde kalması.",
+    "yapisal_etki": "Orta/Yüksek - Düştüğünde ahşapta delik bırakır, mukavemeti düşürür.",
+    "estetik_etki": "Düzensiz ve koyu halkalar estetik kusur oluşturur.",
+    "onerilen_islem": "Budak dolgusu veya ahşap macunu ile doldurulup sabitlenmelidir.",
+    "kullanim_uygunlugu": "Ambalaj, palet veya dolgu yapıldıktan sonra ikincil mobilya."
+  },
+  "catlak": {
+    "ad": "Çatlak (Crack/Split)",
+    "kisa_aciklama": "Ahşap lifleri boyunca meydana gelen boyuna ayrılma veya yarıklar.",
+    "olusum_nedeni": "Hızlı veya düzensiz kurutma, nem değişimi ve iç gerilmeler.",
+    "yapisal_etki": "Yüksek - Ahşabın taşıma kapasitesini ve yük dayanımını ciddi oranda azaltır.",
+    "estetik_etki": "Yüzey bütünlüğünü bozar.",
+    "onerilen_islem": "Epoksi/reçine dolgusu ile güçlendirilmeli veya kusurlu kısım kesilmelidir.",
+    "kullanim_uygunlugu": "Taşıyıcı eleman olarak kullanılamaz; sadece yakacak veya yonga levha üretimi."
+  },
+  "recine": {
+    "ad": "Reçine Cebi (Resin Pocket)",
+    "kisa_aciklama": "Ahşap dokusu içerisinde biriken sıvı veya sertleşmiş reçine cepleri.",
+    "olusum_nedeni": "Ağacın rüzgar veya dış etkenlerle aldığı yaralanmaları onarma mekanizması.",
+    "yapisal_etki": "Düşük - Yapısal dayanımı çok fazla etkilemez.",
+    "estetik_etki": "Sıcakta reçine kusması yapabilir, boya ve vernik tutmasını zorlaştırır.",
+    "onerilen_islem": "Reçine kazınmalı, solvent ile temizlenip reçine tıkayıcı astar sürülmelidir.",
+    "kullanim_uygunlugu": "Dış mekan ahşapları ve astarlanmış yüzeyler."
+  },
+  "mavi_leke": {
+    "ad": "Mavi Leke (Blue Stain)",
+    "kisa_aciklama": "Mantar enfeksiyonu sonucu ahşabın alttaki dokusunda oluşan mavi-gri renk değişimi.",
+    "olusum_nedeni": "Yüksek nemli ortamda mantar sporlarının ahşaba nüfuz etmesi.",
+    "yapisal_etki": "Düşük - Mekanik mukavemeti doğrudan düşürmez fakat nem varlığına işarettir.",
+    "estetik_etki": "Yüksek - Şeffaf cilalarda kötü renk görünümü oluşturur.",
+    "onerilen_islem": "Ahşap kurutulmalı, koruyucu emprenye maddeleri uygulanmalıdır.",
+    "kullanim_uygunlugu": "Koyu renkle boyanacak ahşaplar veya palet/ambalaj imalatı."
+  }
+}
