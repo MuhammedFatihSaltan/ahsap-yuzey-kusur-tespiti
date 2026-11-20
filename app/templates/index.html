@@ -1,15 +1,145 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <h2>Ahşap Yüzey Görseli Yükleyin</h2>
-    <p>Analiz etmek istediğiniz ahşap veya kereste fotoğrafını yükleyin (JPG, PNG).</p>
-    
-    <form action="/analyze" method="post" enctype="multipart/form-data">
-        <label for="fileInput" class="drop-zone" style="display: block;">
-            <p>📸 Görsel Yüklemek İçin Tıklayın veya Dosyayı Sürükleyin</p>
-            <input type="file" id="fileInput" name="file" accept="image/*" style="display:none;" onchange="this.form.submit()">
-        </label>
+<div style="text-align: center; max-width: 720px; margin: 1.5rem auto 2.5rem auto;">
+    <span style="background: #FEF3C7; color: #92400E; padding: 5px 14px; border-radius: 999px; font-size: 0.8rem; font-weight: 700;">
+        YAPAY ZEKÂ DESTEKLİ KALİTE KONTROL
+    </span>
+    <h1 style="font-size: 2.2rem; color: var(--wood-dark); margin: 0.8rem 0; font-weight: 800; letter-spacing: -0.5px;">
+        Ahşap Yüzey Kusurlarını Saniyeler İçinde Tespit Edin
+    </h1>
+    <p style="color: var(--text-muted); font-size: 1.05rem;">
+        YOLOv8 nesne tespiti, LAB renk uzayı anomali haritalama ve üretken yapay zekâ mühendislik değerlendirmesi tek platformda.
+    </p>
+</div>
+
+<div class="card" style="max-width: 760px; margin: 0 auto; box-shadow: var(--shadow-md);">
+    {% if error %}
+    <div style="background: #FEE2E2; color: #991B1B; padding: 12px; border-radius: 8px; margin-bottom: 1rem; font-weight: 600;">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
+    <form id="uploadForm" action="/analyze" method="post" enctype="multipart/form-data">
+        <div id="dropZone" style="border: 2px dashed #C7B9AE; border-radius: 12px; padding: 2.5rem 1.5rem; text-align: center; background: var(--wood-light); cursor: pointer; transition: border-color 0.2s ease, background-color 0.2s ease;">
+            <label for="fileInput" class="sr-only">Ahşap Yüzey Fotoğrafı Seçin</label>
+            <input type="file" id="fileInput" name="file" accept="image/*" required style="display: none;">
+            <div id="uploadPlaceholder">
+                <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">📸</div>
+                <h3 style="color: var(--wood-dark); margin-bottom: 0.3rem;">Ahşap Yüzey Fotoğrafını Sürükleyip Bırakın</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">veya bilgisayarınızdan seçmek için tıklayın (JPG, PNG, WEBP)</p>
+            </div>
+            <div id="previewContainer" style="display: none;">
+                <img id="imagePreview" src="" alt="Ön İzleme" style="max-height: 280px; border-radius: 8px; box-shadow: var(--shadow-sm); margin-bottom: 0.8rem;">
+                <p id="fileNameText" style="font-weight: 600; color: var(--wood-primary); font-size: 0.9rem;"></p>
+            </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <button type="submit" id="submitBtn" class="btn" style="width: 100%; padding: 0.9rem; font-size: 1.05rem; background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);">
+                🔍 Yüzey Analizini Başlat
+            </button>
+        </div>
+
+        <!-- Analiz İlerleme Göstergesi -->
+        <div id="progressBox" style="display: none; margin-top: 1.5rem; padding: 1rem; background: #F8F5F2; border-radius: 10px; border: 1px solid var(--border-color);">
+            <div style="font-weight: 700; color: var(--wood-dark); margin-bottom: 0.5rem;" id="progressStepText">
+                ⏳ 1/3: Görüntü ön işleme ve renk uzayı ayrıştırması yapılıyor...
+            </div>
+            <div style="width: 100%; height: 8px; background: #E5DDD5; border-radius: 999px; overflow: hidden;">
+                <div id="progressBar" style="width: 25%; height: 100%; background: #B45309; transition: width 0.5s ease;"></div>
+            </div>
+        </div>
     </form>
 </div>
+
+<!-- Özellik Kartları -->
+<div id="features" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-top: 2.5rem;">
+    <div class="card" style="margin-bottom: 0;">
+        <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">🎯</div>
+        <h4 style="color: var(--wood-dark); margin-bottom: 0.3rem;">Hibrit Kusur Tespiti</h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">Eğitilmiş YOLO modeli ve LAB renk uzayı anomali algoritması ile hem ham kereste hem kaplama kusurlarını yakalar.</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">📊</div>
+        <h4 style="color: var(--wood-dark); margin-bottom: 0.3rem;">Otomatik Kalite Sınıflama</h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">Piksel birleşim maskesi ile kusurlu yüzey oranını milimetrik hesaplar ve A / B / C / Red kalite sınıfı atar.</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">🤖</div>
+        <h4 style="color: var(--wood-dark); margin-bottom: 0.3rem;">AI Mühendislik & PDF Rapor</h4>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">Kök neden analizi ve üretim hattı iyileştirme önerilerini canlı üretir, tek tıkla kurumsal PDF çıktısı verir.</p>
+    </div>
+</div>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const previewContainer = document.getElementById('previewContainer');
+const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+const imagePreview = document.getElementById('imagePreview');
+const fileNameText = document.getElementById('fileNameText');
+const uploadForm = document.getElementById('uploadForm');
+
+dropZone.addEventListener('click', () => fileInput.click());
+
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = '#B45309';
+    dropZone.style.background = '#FEF3C7';
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.style.borderColor = '#C7B9AE';
+    dropZone.style.background = 'var(--wood-light)';
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = '#C7B9AE';
+    dropZone.style.background = 'var(--wood-light)';
+    if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        showPreview(e.dataTransfer.files[0]);
+    }
+});
+
+fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) {
+        showPreview(fileInput.files[0]);
+    }
+});
+
+function showPreview(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        fileNameText.innerText = `Seçilen Dosya: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        uploadPlaceholder.style.display = 'none';
+        previewContainer.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+uploadForm.addEventListener('submit', () => {
+    const btn = document.getElementById('submitBtn');
+    const progressBox = document.getElementById('progressBox');
+    const progressBar = document.getElementById('progressBar');
+    const stepText = document.getElementById('progressStepText');
+
+    btn.disabled = true;
+    btn.innerText = 'Analiz Ediliyor...';
+    progressBox.style.display = 'block';
+
+    setTimeout(() => {
+        progressBar.style.width = '60%';
+        stepText.innerText = '⏳ 2/3: YOLO nesne tespiti ve anomali ısı haritası çıkarılıyor...';
+    }, 500);
+
+    setTimeout(() => {
+        progressBar.style.width = '90%';
+        stepText.innerText = '⏳ 3/3: Kalite sınıfı ve yüzey oranları hesaplanıyor...';
+    }, 1200);
+});
+</script>
 {% endblock %}

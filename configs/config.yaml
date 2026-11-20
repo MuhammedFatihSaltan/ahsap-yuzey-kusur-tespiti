@@ -28,5 +28,5 @@ quality_classification:
 ai_service:
   provider: "google"
   model: "gemini-3.8-flash"
-  max_tokens: 1000
-  timeout_seconds: 30
+  max_tokens: 1200
+  timeout_seconds: 25

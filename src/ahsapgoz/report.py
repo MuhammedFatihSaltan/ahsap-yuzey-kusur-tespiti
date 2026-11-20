@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -31,11 +32,31 @@ class PDFReportGenerator:
             self.font_bold = "Helvetica-Bold"
 
     def _get_grade_color(self, grade: str) -> str:
-        if "Red" in grade:
+        if "Red" in grade or "Sınıfı Dışında" in grade:
             return "#D32F2F"
         elif "C" in grade:
             return "#E65100"
         return "#2E7D32"
+
+    def _format_ai_text_for_pdf(self, ai_text: str) -> str:
+        if not ai_text:
+            return ""
+        
+        # Güvenli HTML dönüşümü: Markdown başlıklarını düzgün kapatılmış <b> etiketlerine çevir
+        formatted = ai_text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        
+        # ### Başlık ifadelerini kalın yap
+        lines = formatted.split("\n")
+        new_lines = []
+        for line in lines:
+            line_str = line.strip()
+            if line_str.startswith("###"):
+                clean_header = line_str.replace("###", "").strip()
+                new_lines.append(f"<b>{clean_header}</b>")
+            else:
+                new_lines.append(line_str)
+        
+        return "<br/>".join(new_lines)
 
     def generate_report(self, analysis_result: dict, image_path: str, heatmap_path: str, output_pdf_path: str, ai_text: str = None) -> str:
         doc = SimpleDocTemplate(
@@ -152,10 +173,10 @@ class PDFReportGenerator:
             ai_title_style = ParagraphStyle(
                 "AITitleStyle",
                 fontName=self.font_bold,
-                fontSize=12,
-                leading=15,
+                fontSize=11,
+                leading=14,
                 textColor=colors.HexColor("#D97706"),
-                spaceAfter=6
+                spaceAfter=4
             )
             ai_note_style = ParagraphStyle(
                 "AINoteStyle",
@@ -163,19 +184,19 @@ class PDFReportGenerator:
                 fontSize=8,
                 leading=10,
                 textColor=colors.HexColor("#6B7280"),
-                spaceAfter=8
+                spaceAfter=6
             )
 
-            story.append(Paragraph("<b>Yapay Zekâ Detaylı Analiz Değerlendirmesi</b>", ai_title_style))
-            story.append(Paragraph("<i>* Bu bölüm yapay zekâ tarafından üretilmiştir, uzman onayı gerektirir.</i>", ai_note_style))
+            story.append(Paragraph("Yapay Zekâ Detaylı Analiz Değerlendirmesi", ai_title_style))
+            story.append(Paragraph("* Bu bölüm yapay zekâ tarafından üretilmiştir, uzman onayı gerektirir.", ai_note_style))
 
-            formatted_ai = ai_text.replace("\n", "<br/>").replace("### ", "<br/><b>").replace("<b>1.", "<b>1.").replace("<b>2.", "<b>2.")
+            formatted_ai = self._format_ai_text_for_pdf(ai_text)
             story.append(Paragraph(formatted_ai, normal_style))
             story.append(Spacer(1, 10))
 
         # 6. Sorumluluk Reddi
-        disclaimer = "<i>Not: Bu rapor otomatik yapay zekâ analiz sistemi tarafından üretilmiştir. " \
-                     "Nihai kalite kararları için uzman denetimi tavsiye edilir.</i>"
+        disclaimer = "Not: Bu rapor otomatik yapay zekâ analiz sistemi tarafından üretilmiştir. " \
+                     "Nihai kalite kararları için uzman denetimi tavsiye edilir."
         story.append(Paragraph(disclaimer, normal_style))
 
         doc.build(story)

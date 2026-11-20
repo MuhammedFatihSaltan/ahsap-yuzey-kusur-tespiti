@@ -3,15 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AhşapGöz - Yüzey Kusuru ve Anomali Tespit Sistemi</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>AhşapGöz AI | Endüstriyel Yüzey Kalite Kontrol</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --wood-dark: #2C1E16;
+            --wood-primary: #5D4037;
+            --wood-accent: #B45309;
+            --wood-light: #FDF8F5;
+            --bg-page: #F4F1EE;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border-color: #E5DDD5;
+            --shadow-sm: 0 2px 8px rgba(44, 30, 22, 0.06);
+            --shadow-md: 0 8px 24px rgba(44, 30, 22, 0.09);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Üst Navigasyon */
+        .navbar {
+            background: linear-gradient(135deg, var(--wood-dark) 0%, #4A3226 100%);
+            color: #FFF;
+            padding: 0.9rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            color: #FFF;
+        }
+        .brand-badge {
+            background-color: #1F140E;
+            border: 1px solid #F59E0B;
+            color: #FDE68A;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+        .nav-links a {
+            color: #E5E7EB;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-left: 1.5rem;
+            transition: color 0.2s ease;
+        }
+        .nav-links a:hover { color: #FCD34D; }
+
+        .container {
+            max-width: 1220px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 1.6rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Butonlar */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.65rem 1.25rem;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            background: var(--wood-primary);
+            color: #FFF;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0.95; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .btn, .nav-links a {
+                transition: none;
+            }
+            .btn:hover {
+                transform: none;
+            }
+        }
+
+        /* Kalite Rozetleri */
+        .badge {
+            padding: 0.45rem 1rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+        }
+        .badge-a { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+        .badge-b { background: #FEF9C3; color: #854D0E; border: 1px solid #FDE047; }
+        .badge-c { background: #FFEDD5; color: #9A3412; border: 1px solid #FDBA74; }
+        .badge-red { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+
+        /* Tablo */
+        table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; }
+        th {
+            background: #F8F5F2;
+            color: var(--wood-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+        }
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #F1ECE7;
+            font-size: 0.92rem;
+        }
+        tr:hover td { background: #FCF9F6; }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>AhşapGöz Kalite Kontrol Sistemi</h1>
-    </div>
+    <nav class="navbar">
+        <a href="/" class="brand">
+            <span>🪵 AhşapGöz</span>
+            <span class="brand-badge">AI VISION v2.0</span>
+        </a>
+        <div class="nav-links">
+            <a href="/">Yeni Analiz</a>
+            <a href="#features">Sistem Özellikleri</a>
+        </div>
+    </nav>
+
     <div class="container">
         {% block content %}{% endblock %}
     </div>
+
+    <footer>
+        AhşapGöz Endüstriyel Yüzey Kalite Kontrol & Yapay Zekâ Raporlama Platformu
+    </footer>
 </body>
 </html>

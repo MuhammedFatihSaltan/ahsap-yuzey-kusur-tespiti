@@ -1,36 +1,90 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>Analiz Sonuçları</h2>
+<!-- Üst Başlık ve Kalite Rozeti -->
+<div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Rapor Kodu: #{{ file_id }}</div>
+        <h2 style="color: var(--wood-dark); margin: 2px 0;">Yüzey Kalite Kontrol Sonuçları</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">{{ result.grade_explanation }}</p>
+    </div>
+    <div>
         {% if result.grade == 'A Sınıfı' %}
-            <span class="badge badge-a">{{ result.grade }}</span>
+            <span class="badge badge-a" style="font-size: 1.05rem;">🏆 {{ result.grade }}</span>
         {% elif result.grade == 'B Sınıfı' %}
-            <span class="badge badge-b">{{ result.grade }}</span>
+            <span class="badge badge-b" style="font-size: 1.05rem;">✅ {{ result.grade }}</span>
         {% elif result.grade == 'C Sınıfı' %}
-            <span class="badge badge-c">{{ result.grade }}</span>
+            <span class="badge badge-c" style="font-size: 1.05rem;">⚠️ {{ result.grade }}</span>
         {% else %}
-            <span class="badge badge-red">{{ result.grade }}</span>
+            <span class="badge badge-red" style="font-size: 1.05rem;">⛔ {{ result.grade }}</span>
         {% endif %}
     </div>
-    <p><strong>Açıklama:</strong> {{ result.grade_explanation }}</p>
-    <p><strong>Toplam Kusur Sayısı:</strong> {{ result.total_defects }} | <strong>Kusurlu Alan Oranı:</strong> %{{ result.total_defect_ratio_pct }}</p>
 </div>
 
-<div class="card" style="display: flex; gap: 1rem;">
-    <div style="flex: 1;">
-        <h3>İşaretlenmiş Kusurlar (YOLO)</h3>
-        <img src="{{ annotated_image_url }}" alt="YOLO Tespiti Sonucu" style="width: 100%; border-radius: 6px;">
+<!-- 4'lü KPI Özet Kartları -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+    <div class="card" style="margin-bottom: 0; border-left: 4px solid #5D4037;">
+        <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">TOPLAM KUSUR ADEDİ</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--wood-dark); margin-top: 4px;">{{ result.total_defects }}</div>
     </div>
-    <div style="flex: 1;">
-        <h3>Anomali Isı Haritası (Heatmap)</h3>
-        <img src="{{ heatmap_image_url }}" alt="Anomali Isı Haritası" style="width: 100%; border-radius: 6px;">
+    <div class="card" style="margin-bottom: 0; border-left: 4px solid #D97706;">
+        <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">KUSURLU ALAN ORANI</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: #B45309; margin-top: 4px;">%{{ result.total_defect_ratio_pct }}</div>
+    </div>
+    <div class="card" style="margin-bottom: 0; border-left: 4px solid #16A34A;">
+        <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">SAĞLAM YÜZEY ORANI</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: #15803D; margin-top: 4px;">%{{ (100 - result.total_defect_ratio_pct)|round(2) }}</div>
+    </div>
+    <div class="card" style="margin-bottom: 0; border-left: 4px solid #7C3AED;">
+        <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">KALİTE KARARI</div>
+        <div style="font-size: 1.4rem; font-weight: 800; color: #6D28D9; margin-top: 8px;">{{ result.grade }}</div>
     </div>
 </div>
 
+<!-- Görsel Karşılaştırma & Grafik Bölümü -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+    <!-- İnteraktif Before/After Slider -->
+    <div class="card" style="margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+            <h3 style="color: var(--wood-dark);">🔍 İnteraktif Görsel İnceleme</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Kaydırıcıyı hareket ettirerek Isı Haritası ile kıyaslayın</span>
+        </div>
+
+        <div style="position: relative; width: 100%; overflow: hidden; border-radius: 10px; user-select: none;">
+            <img src="{{ heatmap_image_url }}" alt="Isı Haritası" style="width: 100%; display: block;">
+            <div id="overlayBox" style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid #F59E0B;">
+                <img src="{{ annotated_image_url }}" alt="Tespit Sonucu" style="width: 100%; max-width: none; display: block;" id="topCompareImg">
+            </div>
+            <span style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.75); color: #FFF; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;">Tespit Kutuları</span>
+            <span style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.75); color: #FDE68A; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;">Anomali Isı Haritası</span>
+        </div>
+        <label for="compareSlider" class="sr-only">Görsel Karşılaştırma Kaydırıcısı</label>
+        <input type="range" min="0" max="100" value="50" id="compareSlider" style="width: 100%; margin-top: 0.8rem; accent-color: #B45309; cursor: ew-resize;">
+    </div>
+
+    <!-- Kusur Şiddet Dağılım Grafiği -->
+    <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+        <h3 style="color: var(--wood-dark); margin-bottom: 0.5rem;">📊 Şiddet Dağılımı</h3>
+        <div style="position: relative; height: 220px; width: 100%;">
+            <canvas id="severityChart"></canvas>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem;">
+            Tespit edilen kusurların şiddet seviyelerine göre oransal dağılımı.
+        </p>
+    </div>
+</div>
+
+<!-- Kusur Detay Tablosu ve Aksiyonlar -->
 <div class="card">
-    <h3>Tespit Edilen Kusur Detayları</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+        <h3 style="color: var(--wood-dark);">📋 Tespit Edilen Kusur Detayları</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button id="aiAnalyzeBtn" onclick="runAIAnalysis('{{ file_id }}')" class="btn" style="background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);">✨ AI Mühendislik Analizi</button>
+            <a href="/report/{{ file_id }}.pdf" target="_blank" class="btn" style="background: #D97706;">📄 PDF Raporu İndir</a>
+            <a href="/" class="btn" style="background: #4B5563;">🔄 Yeni Analiz</a>
+        </div>
+    </div>
+
     <table>
         <thead>
             <tr>
@@ -47,35 +101,111 @@
                 <td><strong>{{ defect.details.ad }}</strong></td>
                 <td>%{{ (defect.confidence * 100)|round(1) }}</td>
                 <td>%{{ defect.surface_ratio_pct }}</td>
-                <td>{{ defect.severity }}</td>
+                <td>
+                    {% if defect.severity == 'Yüksek' %}
+                        <span style="color: #DC2626; font-weight: 700;">● Yüksek</span>
+                    {% elif defect.severity == 'Orta' %}
+                        <span style="color: #D97706; font-weight: 700;">● Orta</span>
+                    {% else %}
+                        <span style="color: #16A34A; font-weight: 700;">● Düşük</span>
+                    {% endif %}
+                </td>
                 <td>{{ defect.details.onerilen_islem }}</td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="5" style="text-align: center;">Yüzeyde herhangi bir kusur tespit edilmedi (Temiz Yüzey).</td>
+                <td colspan="5" style="text-align: center; color: #166534; font-weight: 600;">✅ Yüzeyde herhangi bir kusur tespit edilmedi (Temiz Yüzey).</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <br>
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <button id="aiAnalyzeBtn" onclick="runAIAnalysis('{{ file_id }}')" class="btn" style="background-color: #7C3AED;">✨ AI ile Detaylı Analiz</button>
-        <a href="/report/{{ file_id }}.pdf" target="_blank" class="btn" style="background-color: #D97706;">📄 PDF Raporunu İndir</a>
-        <a href="/" class="btn">Yeni Analiz Yap</a>
-    </div>
 
     <!-- AI Sonuç Alanı -->
-    <div id="aiLoading" style="display: none; margin-top: 20px; color: #7C3AED; font-weight: bold;">
-        ⏳ Yapay Zekâ analizi hazırlanıyor, lütfen bekleyin...
+    <div id="aiLoading" style="display: none; margin-top: 20px; color: #7C3AED; font-weight: 600;">
+        ⏳ Yapay Zekâ mühendislik raporu hazırlanıyor, lütfen bekleyin...
     </div>
-    <div id="aiError" style="display: none; margin-top: 20px; color: #991B1B; padding: 12px; background: #FEE2E2; border: 1px solid #FCA5A5; border-radius: 6px; font-weight: 600;"></div>
-    <div id="aiResultCard" class="card" style="display: none; margin-top: 20px; background-color: #F3E8FF; border-color: #C084FC;">
-        <h3 style="color: #6B21A8;">Yapay Zekâ Detaylı Analiz Raporu</h3>
-        <div id="aiReportText" style="white-space: pre-line; line-height: 1.6;"></div>
+    <div id="aiError" style="display: none; margin-top: 20px; color: #991B1B; padding: 12px; background: #FEE2E2; border: 1px solid #FCA5A5; border-radius: 8px; font-weight: 600;"></div>
+    <div id="aiResultCard" class="card" style="display: none; margin-top: 20px; background: linear-gradient(to bottom right, #F5F3FF, #EDE9FE); border-color: #C4B5FD;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="color: #5B21B6;">🤖 Yapay Zekâ Detaylı Mühendislik Raporu</h3>
+            <button onclick="copyAIReport()" class="btn" style="padding: 5px 12px; font-size: 0.8rem; background: #6D28D9;">📋 Raporu Kopyala</button>
+        </div>
+        <div id="aiReportText" style="white-space: pre-line; line-height: 1.7; color: #1F2937;"></div>
     </div>
 </div>
 
+<!-- Jinja2 JSON Verisi (JS sözdizimi çakışmasını önlemek için güvenli veri bloğu) -->
+<script id="defects-json" type="application/json">{{ result.defects | tojson }}</script>
+
 <script>
+// 1. İnteraktif Görsel Karşılaştırma Slider Ayarı
+const slider = document.getElementById('compareSlider');
+const overlayBox = document.getElementById('overlayBox');
+const topCompareImg = document.getElementById('topCompareImg');
+
+function syncCompareWidth() {
+    if (overlayBox && overlayBox.parentElement && topCompareImg) {
+        topCompareImg.style.width = overlayBox.parentElement.offsetWidth + 'px';
+    }
+}
+window.addEventListener('resize', syncCompareWidth);
+window.addEventListener('load', syncCompareWidth);
+
+if (slider) {
+    slider.addEventListener('input', (e) => {
+        overlayBox.style.width = e.target.value + '%';
+        syncCompareWidth();
+    });
+}
+
+// 2. Kusur Şiddet Dağılım Grafiği (Chart.js)
+const defectsData = JSON.parse(document.getElementById('defects-json').textContent || '[]');
+let highCount = 0, medCount = 0, lowCount = 0;
+defectsData.forEach(d => {
+    if (d.severity === 'Yüksek') highCount++;
+    else if (d.severity === 'Orta') medCount++;
+    else lowCount++;
+});
+
+const ctx = document.getElementById('severityChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Yüksek Şiddet', 'Orta Şiddet', 'Düşük Şiddet'],
+        datasets: [{
+            data: defectsData.length ? [highCount, medCount, lowCount] : [0, 0, 1],
+            backgroundColor: defectsData.length ? ['#DC2626', '#F59E0B', '#16A34A'] : ['#DCFCE7', '#DCFCE7', '#16A34A'],
+            borderWidth: 2,
+            borderColor: '#FFFFFF'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 12 } } }
+        },
+        cutout: '65%'
+    }
+});
+
+// 3. Markdown Biçimlendirme & AI Canlı Akış
+function formatMarkdown(text) {
+    const escaped = text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    return escaped
+        .replace(/### (.*)/g, '<h4 style="color:#5B21B6; margin: 14px 0 4px 0; font-size: 1.02rem;">$1</h4>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+}
+
+function copyAIReport() {
+    const text = document.getElementById('aiReportText').innerText;
+    navigator.clipboard.writeText(text);
+    alert("Yapay zekâ raporu panoya kopyalandı!");
+}
+
 async function runAIAnalysis(fileId) {
     const btn = document.getElementById('aiAnalyzeBtn');
     const loading = document.getElementById('aiLoading');
@@ -87,26 +217,38 @@ async function runAIAnalysis(fileId) {
     loading.style.display = 'block';
     errorDiv.style.display = 'none';
     resultCard.style.display = 'none';
+    reportTextDiv.innerHTML = "";
 
     try {
-        const response = await fetch(`/ai-analyze/${fileId}`, { method: 'POST' });
-        const data = await response.json();
+        const response = await fetch(`/ai-analyze-stream/${fileId}`, { method: 'POST' });
+        if (!response.ok) throw new Error("Sunucu yanıt vermedi (" + response.status + ")");
 
-        loading.style.display = 'none';
-        btn.disabled = false;
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let fullText = "";
 
-        if (data.success) {
-            reportTextDiv.innerText = data.report_text;
-            resultCard.style.display = 'block';
-        } else {
-            errorDiv.innerText = "Sistem Uyarısı: " + data.error;
-            errorDiv.style.display = 'block';
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunkText = decoder.decode(value, { stream: true });
+            if (chunkText) {
+                fullText += chunkText;
+                if (fullText.trim().startsWith("[Sistem Uyarısı") || fullText.trim().startsWith("HATA:")) {
+                    loading.style.display = 'none';
+                    errorDiv.innerText = fullText.trim();
+                    errorDiv.style.display = 'block';
+                } else {
+                    loading.style.display = 'none';
+                    resultCard.style.display = 'block';
+                    reportTextDiv.innerHTML = formatMarkdown(fullText);
+                }
+            }
         }
+        btn.disabled = false;
     } catch (err) {
-        console.error("AI Analiz İsteği Başarısız Oldu:", err);
         loading.style.display = 'none';
         btn.disabled = false;
-        errorDiv.innerText = "İstek sırasında bir ağ hatası oluştu. Lütfen bağlantınızı kontrol edin.";
+        errorDiv.innerText = "Sistem Uyarısı: " + err.message;
         errorDiv.style.display = 'block';
     }
 }
